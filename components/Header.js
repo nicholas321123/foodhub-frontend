@@ -32,8 +32,17 @@ const Header = () => {
     const delayDebounceFn = setTimeout(async () => {
       setIsSearching(true);
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/products/search?q=${encodeURIComponent(searchQuery)}`);
-        setSuggestions(response.data.slice(0, 5)); // Limite de 5 itens no autocomplete
+        const [resProducts, resRestaurants] = await Promise.all([
+          axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/products/search?q=${encodeURIComponent(searchQuery)}`),
+          axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/restaurantes?q=${encodeURIComponent(searchQuery)}`)
+        ]);
+        
+        const combined = [
+          ...resRestaurants.data.map(r => ({ ...r, isRestaurant: true })),
+          ...resProducts.data
+        ];
+        
+        setSuggestions(combined.slice(0, 5)); // Limite de 5 itens
         setShowSuggestions(true);
       } catch (error) {
         console.error('Erro na busca:', error);
@@ -126,17 +135,21 @@ const Header = () => {
                     <div>
                       {suggestions.map((item) => (
                         <div 
-                          key={`${item.restaurante_id}-${item.id}`} 
+                          key={item.isRestaurant ? `rest-${item.id}` : `${item.restaurante_id}-${item.id}`} 
                           onClick={() => {
                             setSearchQuery(item.nome);
                             setShowSuggestions(false);
-                            router.push(`/search?q=${encodeURIComponent(item.nome)}`);
+                            if (item.isRestaurant) {
+                              router.push(`/restaurant/${item.id}`);
+                            } else {
+                              router.push(`/search?q=${encodeURIComponent(item.nome)}`);
+                            }
                           }}
                           className="flex items-center gap-3 p-3 hover:bg-gray-50 dark:hover:bg-white/5 cursor-pointer transition-colors border-b border-gray-50 dark:border-white/5 last:border-none"
                         >
                           <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0 bg-gray-100">
                             <img 
-                              src={item.imagem_url || item.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100'} 
+                              src={item.logo_url || item.imagem_url || item.image_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100'} 
                               alt={item.nome}
                               className="w-full h-full object-cover"
                               onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100'; }}
@@ -144,9 +157,13 @@ const Header = () => {
                           </div>
                           <div className="flex-1 min-w-0">
                             <p className="text-sm font-black text-secondary-light dark:text-secondary-dark truncate">{item.nome}</p>
-                            <p className="text-[10px] font-bold text-gray-400 truncate mt-0.5">{item.restaurante_nome}</p>
+                            <p className="text-[10px] font-bold text-gray-400 truncate mt-0.5">
+                              {item.isRestaurant ? 'Restaurante' : item.restaurante_nome}
+                            </p>
                           </div>
-                          <span className="text-sm font-black text-primary">R$ {Number(item.preco).toFixed(2)}</span>
+                          {!item.isRestaurant && (
+                            <span className="text-sm font-black text-primary">R$ {Number(item.preco).toFixed(2)}</span>
+                          )}
                         </div>
                       ))}
                       <div 

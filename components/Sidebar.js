@@ -1,12 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { X, Home, Grid, Utensils, Heart, Info, Phone, Star } from 'lucide-react';
+import { X, Home, Grid, Utensils, Heart, Info, Phone, Star, ShieldAlert } from 'lucide-react';
 import axios from 'axios';
 
 const Sidebar = ({ isOpen, onClose }) => {
   const [restaurants, setRestaurants] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
+    // Verifica admin (apenas ID 1)
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if (user && user.id === 1 && user.tipo === 'admin') {
+      setIsAdmin(true);
+    }
+
     if (isOpen) {
       const fetchRestaurants = async () => {
         try {
@@ -46,6 +53,12 @@ const Sidebar = ({ isOpen, onClose }) => {
               <SidebarLink href="/" icon={<Home size={20} />} label="Página Inicial" onClick={onClose} />
               <SidebarLink href="/categoria" icon={<Grid size={20} />} label="Categorias" onClick={onClose} />
               <SidebarLink href="/favorites" icon={<Heart size={20} />} label="Favoritos" onClick={onClose} />
+              
+              {isAdmin && (
+                <div className="pt-2">
+                  <SidebarLink href="/admin" icon={<ShieldAlert size={20} />} label="Painel de Controle" onClick={onClose} customClass="text-primary bg-primary/5 border border-primary/20" />
+                </div>
+              )}
             </nav>
 
             <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6 px-4">Restaurantes</h3>
@@ -91,9 +104,9 @@ const Sidebar = ({ isOpen, onClose }) => {
   );
 };
 
-const SidebarLink = ({ href, icon, label, onClick }) => (
+const SidebarLink = ({ href, icon, label, onClick, customClass = '' }) => (
   <Link href={href}>
-    <div onClick={onClick} className="flex items-center gap-4 p-4 rounded-2xl text-gray-500 dark:text-gray-400 font-bold hover:bg-primary/5 hover:text-primary transition-all cursor-pointer group">
+    <div onClick={onClick} className={`flex items-center gap-4 p-4 rounded-2xl font-bold transition-all cursor-pointer group ${customClass ? customClass : 'text-gray-500 dark:text-gray-400 hover:bg-primary/5 hover:text-primary'}`}>
       <span className="group-hover:scale-110 transition-transform">{icon}</span>
       <span className="text-sm">{label}</span>
     </div>

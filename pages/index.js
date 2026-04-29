@@ -1,26 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import Header from '../components/Header';
 import ProductCard from '../components/ProductCard';
-import { ArrowRight, Sparkles } from 'lucide-react';
+import RestaurantCard from '../components/RestaurantCard';
+import { ArrowRight, Sparkles, ShieldAlert } from 'lucide-react';
 import Link from 'next/link';
 import axios from 'axios';
 
 export default function Home() {
   const [products, setProducts] = useState([]);
+  const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    // Verifica admin (apenas ID 1)
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    if (user && user.id === 1 && user.tipo === 'admin') {
+      setIsAdmin(true);
+    }
+
+    const fetchData = async () => {
       try {
-        const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/products`);
-        setProducts(response.data);
+        const [resProducts, resRestaurants] = await Promise.all([
+          axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/products`),
+          axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/restaurantes`)
+        ]);
+        setProducts(resProducts.data);
+        setRestaurants(resRestaurants.data);
       } catch (error) {
-        console.error('Erro ao buscar produtos:', error);
+        console.error('Erro ao buscar dados:', error);
       } finally {
         setLoading(false);
       }
     };
-    fetchProducts();
+    fetchData();
   }, []);
 
   return (
@@ -38,21 +51,48 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex flex-col justify-center px-8 md:px-16">
 
             <h1 className="text-white text-5xl md:text-7xl font-black mb-6 leading-tight tracking-tighter">O sabor que você ama,<br/>agora <span className="text-primary italic">mais rápido.</span></h1>
-            <p className="text-white/60 mb-8 max-w-md font-medium text-lg">Explore os melhores pratos da cidade em um só lugar. Dos clássicos aos gourmet, entregamos tudo.</p>
+            <p className="text-white/60 mb-8 max-w-md font-medium text-lg">Explore os melhores restaurantes e pratos da cidade em um só lugar.</p>
+            
+            {isAdmin && (
+              <Link href="/admin">
+                <button className="flex items-center gap-2 mt-4 px-4 py-2 bg-white/10 hover:bg-white/20 text-white rounded-lg text-sm font-bold backdrop-blur-md w-fit transition-all opacity-80 hover:opacity-100">
+                  <ShieldAlert size={16} />
+                  Painel de Controle
+                </button>
+              </Link>
+            )}
 
           </div>
         </section>
 
-        {/* Listagem de Produtos (NOVO FOCO DA HOME) */}
-        <section className="mb-20">
-          <div className="flex items-center justify-between mb-10">
-            <h2 className="text-title text-4xl">Destaques pra você</h2>
-
+        {/* Listagem de Restaurantes */}
+        <section className="mb-16">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-title text-3xl md:text-4xl">Restaurantes Populares</h2>
           </div>
 
           {loading ? (
-            <div className="flex justify-center py-20">
-              <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+            <div className="flex justify-center py-10">
+              <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {restaurants.map(restaurant => (
+                <RestaurantCard key={restaurant.id} restaurant={restaurant} />
+              ))}
+            </div>
+          )}
+        </section>
+
+        {/* Listagem de Produtos */}
+        <section className="mb-20">
+          <div className="flex items-center justify-between mb-10">
+            <h2 className="text-title text-3xl md:text-4xl">Destaques pra você</h2>
+          </div>
+
+          {loading ? (
+            <div className="flex justify-center py-10">
+              <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
