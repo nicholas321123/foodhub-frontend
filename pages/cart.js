@@ -5,7 +5,15 @@ import { Trash2, Plus, Minus, ArrowLeft, ShoppingBag } from 'lucide-react';
 import Link from 'next/link';
 
 const CartPage = () => {
-  const { cartItems, updateQuantity, removeFromCart, cartTotal } = useCart();
+  const { cartItems, updateQuantity, removeFromCart, cartTotal, isHydrated } = useCart();
+
+  if (!isHydrated) {
+    return (
+      <div className="min-h-screen bg-background-light dark:bg-background-dark flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
 
   if (cartItems.length === 0) {
     return (

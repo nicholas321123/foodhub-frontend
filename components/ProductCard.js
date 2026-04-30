@@ -71,10 +71,7 @@ const ProductCard = ({ product, showRestaurant = false }) => {
             )}
           </div>
           <button 
-            onClick={() => {
-              addToCart(product);
-              router.push('/cart');
-            }}
+            onClick={() => addToCart(product)}
             className="p-3 bg-gray-100 dark:bg-white/5 text-secondary-light dark:text-secondary-dark rounded-2xl hover:bg-primary hover:text-white transition-all active:scale-90 shadow-sm"
           >
             <ShoppingCart size={20} />

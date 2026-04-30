@@ -4,6 +4,7 @@ const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
+  const [isHydrated, setIsHydrated] = useState(false);
 
   // Persistência local
   useEffect(() => {
@@ -11,11 +12,14 @@ export const CartProvider = ({ children }) => {
     if (savedCart) {
       setCartItems(JSON.parse(savedCart));
     }
+    setIsHydrated(true);
   }, []);
 
   useEffect(() => {
-    localStorage.setItem('delivery_cart', JSON.stringify(cartItems));
-  }, [cartItems]);
+    if (isHydrated) {
+      localStorage.setItem('delivery_cart', JSON.stringify(cartItems));
+    }
+  }, [cartItems, isHydrated]);
 
   const addToCart = (product) => {
     // Normaliza os dados para garantir que funcionem no carrinho
@@ -63,6 +67,7 @@ export const CartProvider = ({ children }) => {
       updateQuantity, 
       cartTotal, 
       cartCount,
+      isHydrated,
       clearCart: () => setCartItems([])
     }}>
       {children}
