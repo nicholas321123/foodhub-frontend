@@ -82,7 +82,7 @@ const CategoryPage = () => {
               {categoryName} {category?.icon}
             </h1>
             <p className="text-white/60 font-medium text-lg">
-              Os melhores pratos de {categoryName.toLowerCase()} selecionados para você.
+              Os melhores pratos de {categoryName?.toLowerCase() || 'esta categoria'} selecionados para você.
             </p>
           </div>
         </section>

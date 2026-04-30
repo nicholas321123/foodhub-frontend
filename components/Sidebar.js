@@ -17,7 +17,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     if (isOpen) {
       const fetchRestaurants = async () => {
         try {
-          const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/restaurantes`);
+          const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/restaurantes`);
           setRestaurants(response.data);
         } catch (error) {
           console.error('Erro ao buscar restaurantes:', error);
@@ -51,7 +51,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6 px-4">Menu Principal</h3>
             <nav className="space-y-2 mb-10">
               <SidebarLink href="/" icon={<Home size={20} />} label="Página Inicial" onClick={onClose} />
-              <SidebarLink href="/categoria" icon={<Grid size={20} />} label="Categorias" onClick={onClose} />
+              <SidebarLink href="/explore" icon={<Grid size={20} />} label="Categorias" onClick={onClose} />
               <SidebarLink href="/favorites" icon={<Heart size={20} />} label="Favoritos" onClick={onClose} />
               
               {isAdmin && (

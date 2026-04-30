@@ -1,13 +1,15 @@
 import React from 'react';
+import Link from 'next/link';
 import { ShoppingCart, Star, Heart, Clock, Utensils } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useFavorites } from '../context/FavoritesContext';
-import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 const ProductCard = ({ product, showRestaurant = false }) => {
+  const router = useRouter();
   const { addToCart } = useCart();
   const { toggleFavorite, isFavorite } = useFavorites();
-  const favorited = isFavorite(product.id);
+  const favorited = isFavorite(product.id, 'product');
 
   const price = Number(product.preco || product.price || 0);
 
@@ -20,7 +22,7 @@ const ProductCard = ({ product, showRestaurant = false }) => {
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
         />
         <button 
-          onClick={() => toggleFavorite(product)}
+          onClick={() => toggleFavorite(product, 'product')}
           className={`absolute top-4 right-4 p-2.5 rounded-2xl backdrop-blur-md transition-all shadow-lg z-10 ${
             favorited 
               ? 'bg-primary text-white scale-110' 
@@ -69,7 +71,10 @@ const ProductCard = ({ product, showRestaurant = false }) => {
             )}
           </div>
           <button 
-            onClick={() => addToCart(product)}
+            onClick={() => {
+              addToCart(product);
+              router.push('/cart');
+            }}
             className="p-3 bg-gray-100 dark:bg-white/5 text-secondary-light dark:text-secondary-dark rounded-2xl hover:bg-primary hover:text-white transition-all active:scale-90 shadow-sm"
           >
             <ShoppingCart size={20} />

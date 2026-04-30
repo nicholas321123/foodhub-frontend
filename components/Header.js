@@ -33,8 +33,8 @@ const Header = () => {
       setIsSearching(true);
       try {
         const [resProducts, resRestaurants] = await Promise.all([
-          axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/products/search?q=${encodeURIComponent(searchQuery)}`),
-          axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/restaurantes?q=${encodeURIComponent(searchQuery)}`)
+          axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/products/search?q=${encodeURIComponent(searchQuery)}`),
+          axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/restaurantes?q=${encodeURIComponent(searchQuery)}`)
         ]);
         
         const combined = [
@@ -95,7 +95,7 @@ const Header = () => {
               </span>
             </Link>
 
-            <Link href="/categoria">
+            <Link href="/explore">
               <span className="hidden lg:flex items-center gap-2 px-6 py-2.5 bg-primary/10 text-primary hover:bg-primary hover:text-white font-black rounded-full cursor-pointer transition-all transform hover:scale-105 shadow-sm">
                 <Compass size={18} />
                 Explorar Categorias

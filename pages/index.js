@@ -76,7 +76,7 @@ export default function Home() {
               <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
               {restaurants.map(restaurant => (
                 <RestaurantCard key={restaurant.id} restaurant={restaurant} />
               ))}
@@ -84,34 +84,9 @@ export default function Home() {
           )}
         </section>
 
-        {/* Listagem de Produtos */}
-        <section className="mb-20">
-          <div className="flex items-center justify-between mb-10">
-            <h2 className="text-title text-3xl md:text-4xl">Destaques pra você</h2>
-          </div>
 
-          {loading ? (
-            <div className="flex justify-center py-10">
-              <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-primary"></div>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-              {products.map(product => (
-                <ProductCard key={`${product.restaurante_id}-${product.id}`} product={product} showRestaurant={true} />
-              ))}
-            </div>
-          )}
-        </section>
 
-        {/* Call to Action */}
-        <section className="mb-20 bg-primary/10 rounded-[48px] p-12 border border-primary/20 flex flex-col md:flex-row items-center justify-between gap-8 overflow-hidden relative">
-          <Sparkles className="absolute -right-10 -bottom-10 text-primary/5" size={300} />
-          <div className="relative z-10">
-            <h2 className="text-3xl font-black text-secondary-light dark:text-secondary-dark mb-2 tracking-tighter">Quer vender no FoodHub?</h2>
-            <p className="text-gray-500 font-medium">Cadastre seu restaurante e alcance milhares de novos clientes todos os dias.</p>
-          </div>
-          <button className="btn-primary px-10 whitespace-nowrap relative z-10">Seja um Parceiro</button>
-        </section>
+
       </main>
 
       <footer className="bg-white dark:bg-card-dark border-t border-gray-100 dark:border-white/5 py-20 transition-colors">

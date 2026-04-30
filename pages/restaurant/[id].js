@@ -6,11 +6,15 @@ import ProductCard from '../../components/ProductCard';
 import { Star, Clock, MapPin, CreditCard, Info, ArrowLeft, Heart, Share2, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 
+import { useFavorites } from '../../context/FavoritesContext';
+
 const RestaurantPage = () => {
   const router = useRouter();
   const { id } = router.query;
   const [restaurant, setRestaurant] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { toggleFavorite, isFavorite } = useFavorites();
+  const favorited = isFavorite(Number(id), 'restaurant');
 
   useEffect(() => {
     if (!id) return;
@@ -109,8 +113,11 @@ const RestaurantPage = () => {
                   </div>
                 </div>
                 <div className="flex gap-4 mb-2">
-                  <button className="p-4 bg-white/10 backdrop-blur-md rounded-2xl text-white hover:bg-primary transition-all">
-                    <Heart size={20} />
+                  <button 
+                    onClick={() => toggleFavorite(restaurant, 'restaurant')}
+                    className={`p-4 backdrop-blur-md rounded-2xl transition-all ${favorited ? 'bg-primary text-white scale-110 shadow-lg' : 'bg-white/10 text-white hover:bg-primary'}`}
+                  >
+                    <Heart size={20} fill={favorited ? "currentColor" : "none"} />
                   </button>
                   <button className="p-4 bg-white/10 backdrop-blur-md rounded-2xl text-white hover:bg-primary transition-all">
                     <Share2 size={20} />
@@ -178,13 +185,29 @@ const RestaurantPage = () => {
 
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-              {restaurant.products.map(product => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
+            {(() => {
+              const grouped = (restaurant.products || []).reduce((acc, product) => {
+                const cat = product.categoria_nome || 'Outros';
+                if (!acc[cat]) acc[cat] = [];
+                acc[cat].push(product);
+                return acc;
+              }, {});
+
+              return Object.entries(grouped).map(([category, items]) => (
+                <div key={category} className="mb-12">
+                  <h3 className="text-xl font-black text-secondary-light dark:text-secondary-dark mb-6 border-b-2 border-primary/20 pb-2 inline-block uppercase tracking-tighter">
+                    {category}
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                    {items.map(product => (
+                      <ProductCard key={product.id} product={product} />
+                    ))}
+                  </div>
+                </div>
+              ));
+            })()}
             
-            {restaurant.products.length === 0 && (
+            {(restaurant.products || []).length === 0 && (
               <div className="text-center py-20 bg-gray-50 dark:bg-white/5 rounded-[48px] border border-dashed border-gray-200 dark:border-white/10">
                 <p className="text-gray-400 font-bold">Nenhum item disponível no momento.</p>
               </div>
