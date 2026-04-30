@@ -42,10 +42,10 @@ export default function Home() {
       
       <main className="container mx-auto px-4 py-8">
         {/* Banner Hero */}
-        <section className="mb-14 rounded-[48px] overflow-hidden relative h-[400px] group shadow-2xl">
+        <section className="mb-14 rounded-[56px] overflow-hidden relative h-[450px] group shadow-2xl border border-white/5">
           <img 
-            src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=80&w=1500" 
-            className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105"
+            src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?auto=format&fit=crop&q=95&w=2000" 
+            className="w-full h-full object-cover transition-transform duration-[2000ms] group-hover:scale-105"
             alt="Promoção"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex flex-col justify-center px-8 md:px-16">

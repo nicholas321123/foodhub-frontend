@@ -30,9 +30,9 @@ export default function AdminDashboard() {
     setLoading(true);
     try {
       const [resRestaurants, resProducts, resCategories] = await Promise.all([
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/restaurantes?admin=1`),
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/products?admin=1`),
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/categories`)
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/restaurantes?admin=1`),
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/products?admin=1`),
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/categories`)
       ]);
       setRestaurants(resRestaurants.data);
       setProducts(resProducts.data);
@@ -66,7 +66,7 @@ export default function AdminDashboard() {
       
       const endpoint = endpointMap[type] || 'categories';
       
-      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/${endpoint}/${id}`, {
+      await axios.delete(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/${endpoint}/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       
@@ -108,9 +108,9 @@ export default function AdminDashboard() {
       const config = { headers: { Authorization: `Bearer ${token}` } };
 
       if (editingData.id) {
-        await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/${endpoint}/${editingData.id}`, editingData, config);
+        await axios.put(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/${endpoint}/${editingData.id}`, editingData, config);
       } else {
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/${endpoint}`, editingData, config);
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/${endpoint}`, editingData, config);
       }
       setShowModal(false);
       fetchData();
@@ -228,18 +228,28 @@ export default function AdminDashboard() {
                   <tr key={item.id} className="border-b border-gray-50 dark:border-white/5 hover:bg-gray-50 dark:hover:bg-white/5">
                     <td className="py-4 text-sm font-bold text-gray-500">#{item.id}</td>
                     <td className="py-4">
-                      <div className="flex flex-col gap-1">
-                        <span className="font-bold text-secondary-light dark:text-secondary-dark">{item.nome}</span>
-                        {activeTab === 'produtos' && (
-                          <div className="flex items-center gap-2">
-                            <span className="text-[10px] font-black bg-primary/10 text-primary px-2 py-0.5 rounded-lg uppercase tracking-widest">
-                              {item.restaurante_nome || 'Sem Restaurante'}
-                            </span>
-                            <span className="text-[10px] font-black bg-gray-100 dark:bg-white/10 text-gray-400 px-2 py-0.5 rounded-lg uppercase tracking-widest">
-                              {item.categoria_nome || 'Sem Categoria'}
-                            </span>
-                          </div>
-                        )}
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-xl overflow-hidden bg-gray-100 dark:bg-white/5 shrink-0 border border-gray-100 dark:border-white/10 shadow-sm">
+                          <img 
+                            src={item.logo_url || item.imagem_url || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100'} 
+                            className="w-full h-full object-cover" 
+                            alt={item.nome}
+                            onError={(e) => { e.target.onerror = null; e.target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=100'; }}
+                          />
+                        </div>
+                        <div className="flex flex-col gap-1 min-w-0">
+                          <span className="font-bold text-secondary-light dark:text-secondary-dark truncate">{item.nome}</span>
+                          {activeTab === 'produtos' && (
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10px] font-black bg-primary/10 text-primary px-2 py-0.5 rounded-lg uppercase tracking-widest truncate">
+                                {item.restaurante_nome || 'Sem Restaurante'}
+                              </span>
+                              <span className="text-[10px] font-black bg-gray-100 dark:bg-white/10 text-gray-400 px-2 py-0.5 rounded-lg uppercase tracking-widest truncate">
+                                {item.categoria_nome || 'Sem Categoria'}
+                              </span>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </td>
                     <td className="py-4 text-sm text-gray-500 font-medium">

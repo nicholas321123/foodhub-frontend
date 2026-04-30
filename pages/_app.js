@@ -4,12 +4,16 @@ import { FavoritesProvider } from '../context/FavoritesContext'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import setupAxiosInterceptors from '../utils/axiosInterceptor'
 
 export default function App({ Component, pageProps }) {
   const router = useRouter();
   const [authorized, setAuthorized] = useState(false);
 
   useEffect(() => {
+    // Initialize Axios Interceptors
+    setupAxiosInterceptors();
+
     // Run auth check on initial load
     authCheck(router.asPath);
 

@@ -33,8 +33,8 @@ const Header = () => {
       setIsSearching(true);
       try {
         const [resProducts, resRestaurants] = await Promise.all([
-          axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/products/search?q=${encodeURIComponent(searchQuery)}`),
-          axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/restaurantes?q=${encodeURIComponent(searchQuery)}`)
+          axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/products/search?q=${encodeURIComponent(searchQuery)}`),
+          axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/restaurantes?q=${encodeURIComponent(searchQuery)}`)
         ]);
         
         const combined = [

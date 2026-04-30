@@ -17,7 +17,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     if (isOpen) {
       const fetchRestaurants = async () => {
         try {
-          const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/restaurantes`);
+          const response = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/restaurantes`);
           setRestaurants(response.data);
         } catch (error) {
           console.error('Erro ao buscar restaurantes:', error);

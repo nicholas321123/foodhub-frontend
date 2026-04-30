@@ -12,7 +12,7 @@ export const FavoritesProvider = ({ children }) => {
       const token = localStorage.getItem('token');
       if (!token) return;
       try {
-        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/favorites`, {
+        const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/favorites`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         setFavoriteRestaurants(res.data.restaurants || []);
@@ -34,14 +34,14 @@ export const FavoritesProvider = ({ children }) => {
 
     try {
       if (isFav) {
-        await axios.delete(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/favorites`, {
+        await axios.delete(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/favorites`, {
           headers: { Authorization: `Bearer ${token}` },
           params: type === 'restaurant' ? { restaurantId: item.id } : { productId: item.id }
         });
         if (type === 'restaurant') setFavoriteRestaurants(prev => prev.filter(r => r.id !== item.id));
         else setFavoriteProducts(prev => prev.filter(p => p.id !== item.id));
       } else {
-        await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'}/favorites`, 
+        await axios.post(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/favorites`, 
           type === 'restaurant' ? { restaurantId: item.id } : { productId: item.id },
           { headers: { Authorization: `Bearer ${token}` } }
         );

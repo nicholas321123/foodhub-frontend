@@ -10,9 +10,18 @@ import { useFavorites } from '../context/FavoritesContext';
 
 export default function FavoritesPage() {
   const { favoriteRestaurants, favoriteProducts } = useFavorites();
-  const [activeTab, setActiveTab] = useState('restaurants');
-  const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const { tab } = router.query;
+  const [activeTab, setActiveTab] = useState('products');
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (tab === 'products') {
+      setActiveTab('products');
+    } else if (tab === 'restaurants') {
+      setActiveTab('restaurants');
+    }
+  }, [tab]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -63,7 +72,7 @@ export default function FavoritesPage() {
               onClick={() => setActiveTab('products')}
               className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest transition-all ${activeTab === 'products' ? 'bg-white dark:bg-primary text-primary dark:text-white shadow-md' : 'text-gray-400 hover:text-primary'}`}
             >
-              <Package size={14} /> Pratos
+              <Package size={14} /> Produtos
             </button>
           </div>
         </div>
@@ -93,7 +102,7 @@ export default function FavoritesPage() {
               </div>
             ) : (
               <EmptyState 
-                title="Nenhum prato favorito" 
+                title="Nenhum produto favorito" 
                 desc="Aquelas delícias que você amou aparecerão aqui quando você clicar no coração no card do produto." 
                 btnText="Explorar Cardápios"
               />
